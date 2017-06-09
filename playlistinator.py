@@ -1,7 +1,17 @@
+"""
+Playlistinator
+by Jonathan Castle
+
+Accepts a sentence from the user and produces 
+a playlist of songs that spell out the sentence
+"""
+
+# imports
 import httplib2
 import json
 
 
+# main
 def main():
 	ans = input("name a song > ")
 	while(ans != "q"):
@@ -9,6 +19,50 @@ def main():
 		print(str(isthere) + " : artist = " + str(artist))
 		ans = input("name a song > ")
 
+def build_result(playlist):
+	result = ""
+	for song in playlist:
+		result += "\n" + song[0] + "\n by " + song[1] + "\n"
+	return result
+
+# accepts a sentence from the user
+# and attempts to construct a 
+# playlist using the words in the 
+# sentence
+#
+# returns a list of song title/artist pairs
+def construct_playlist(sentence):
+	#TODO: need algorithm
+	
+	# split the sentence into tokens (words)
+	words = sentence.split(" ")
+
+	# LEXOGRAPHIC SEARCH
+		# starting with the whole sentence, try to
+		# find a song title. if one isn't found, 
+		# try the whole sentence minus the last word.
+		# etc.
+	isthere, artist = check_song(sentence.title())
+	if(isthere):
+		return [[str(sentence), str(artist)]]
+	
+	done = False
+	playlist = []
+
+	# since the whole sentence didn't work
+	# start with the sentence minus its last word
+	# and continue reducing size till you find a valid title
+	# then move to the next word and do it again
+	offset = len(words) - 1 
+	while(done == False):
+		songtitle = " ".join(words[:offset]).title()
+		isthere, artist = check_song(songtitle)
+		if(isthere):
+			whatsleft = " ".join(words[offset:])
+			playlist = [[songtitle, artist]] + construct_playlist(whatsleft)
+			done = True
+		else:
+			offset -= 1
 
 # checks if the given song title is
 # a valid song 
@@ -30,7 +84,7 @@ def check_song(song):
 	# otherwise return false and n/a
 	if(content['results']['trackmatches']['track'] == []):
 		return False, "N/A"
-	else: #TODO: need to search through results to find exact match
+	else: 
 		for track in content['results']['trackmatches']['track']:
 			if(track['name'] == songtitle):
 				return True, track['artist']
@@ -38,6 +92,7 @@ def check_song(song):
 
 
 
-
+# if executed from the command line
+# just run main
 if(__name__ == "__main__"):
 	main()
