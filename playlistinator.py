@@ -20,11 +20,6 @@ def main():
 		print("Result: \n" + result)
 		ans = input("Enter a sentence (no punctuation) or 'q' to quit > ")
 
-def build_result(playlist):
-	result = ""
-	for song in playlist:
-		result += "\n" + song[0] + "\n by " + song[1] + "\n"
-	return result
 
 # accepts a sentence from the user
 # and attempts to construct a
@@ -98,7 +93,6 @@ def check_song(song):
 			if(track['name'] == songtitle):
 				return True, track['artist']
 		return False, "N/A"
-
 
 
 # if executed from the command line
