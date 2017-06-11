@@ -13,7 +13,7 @@ import json
 
 # main
 def main():
-	ans = input("name a song > ")
+	ans = input("Enter a sentence (no punctuation) > ")
 	while(ans != "q"):
 		plylst = construct_playlist(ans)
 		print("playlist: \n" + str(plylst))
