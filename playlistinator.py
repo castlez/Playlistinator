@@ -16,8 +16,9 @@ def main():
 	ans = input("Enter a sentence (no punctuation) > ")
 	while(ans != "q"):
 		plylst = construct_playlist(ans)
-		print("playlist: \n" + str(plylst))
-		ans = input("name a song > ")
+		result = str(plylst) if plylst != [["-1"]] else "Cannot construct a playlist with last.fm database for that sentence."
+		print("Result: \n" + result)
+		ans = input("Enter a sentence (no punctuation) or 'q' to quit > ")
 
 def build_result(playlist):
 	result = ""
@@ -53,15 +54,21 @@ def construct_playlist(sentence):
 	# and continue reducing size till you find a valid title
 	# then move to the next word and do it again
 	offset = len(words) - 1
-	while(done == False):
+	while(done == False and offset > 0):
 		songtitle = " ".join(words[:offset]).title()
 		isthere, artist = check_song(songtitle)
 		if(isthere):
 			whatsleft = " ".join(words[offset:])
-			return [[songtitle, artist]] + construct_playlist(whatsleft)
+			rest = construct_playlist(whatsleft)
+			if(rest == [["-1"]]):
+				offset -= 1
+			else:
+				return [[songtitle, artist]] + rest
 			done = True
 		else:
 			offset -= 1
+	return [["-1"]]
+
 
 # checks if the given song title is
 # a valid song
@@ -81,6 +88,9 @@ def check_song(song):
 
 	# if tracks exist, return true and the tracks artist
 	# otherwise return false and n/a
+	default = "it's odd python makes you do this"
+	if(content.get('results', default) == default):
+		return False, "N/A"
 	if(content['results']['trackmatches']['track'] == []):
 		return False, "N/A"
 	else:
