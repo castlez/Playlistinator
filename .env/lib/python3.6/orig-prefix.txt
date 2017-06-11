@@ -1,1 +1,0 @@
-/home/castlez/.pyenv/versions/3.6.1
